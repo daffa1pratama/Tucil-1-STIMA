@@ -9,22 +9,28 @@ typedef struct {
 } POINT;
 
 typedef struct {
-    POINT PAw;  /* Titik Awal  */
-    POINT PAkh; /* Titik Akhir */
+    // Ax + By = C
+    float A;    /* Koefisien A */
+    float B;    /* Koefisien B */
+    float C;    /* Koefisien C */
 } LINE;
 
 typedef struct {
-    POINT *Container;
+    POINT *Tab;
     int MaxEl;
-} CONVEX;
+} SET;
 
 #define Absis(P) (P).X
 #define Ordinat(P) (P).Y
-#define PAwal(L) (L).PAw
-#define PAkhir(L) (L).PAkh
-#define Container(C) (C).Container
+#define A(L) (L).A
+#define B(L) (L).B
+#define C(L) (L).C
+#define Elmt(C, i) (C).Tab[(i)]
+#define Tab(C) (C).Tab
+#define MaxEl(C) (C).MaxEl
+#define Neff(C) (C).Neff
 
-POINT MakePOINT (float X, float Y);
+POINT MakePOINT (int X, int Y);
 /* Membentuk sebuah POINT dari komponen-komponennya */
 
 void TulisPOINT (POINT P);
@@ -41,5 +47,12 @@ void MakeGARIS (POINT P1, POINT P2, LINE * L);
 /* F.S. L terdefinisi dengan L.PAw = P1 dan L.PAkh = P2 */
 /* Membentuk sebuah L dari komponen-komponennya */
 
+void MakeEmpty(SET *S, int maxel);
+/* I.S. T sembarang, maxel > 0 */
+/* F.S. Terbentuk tabel T kosong dengan kapasitas maxel + 1 */
+
+bool isLeft(LINE L, POINT P);
+
+bool isRight(LINE L, POINT P);
 
 #endif
