@@ -5,7 +5,7 @@
 
 typedef struct { 
 	float X; /* absis   */
-	float Y; /* ordinat */
+	float Y; /* ordinat */;
 } POINT;
 
 typedef struct {
@@ -18,6 +18,7 @@ typedef struct {
 typedef struct {
     POINT *Tab;
     int MaxEl;
+    int Neff;
 } SET;
 
 #define Absis(P) (P).X
@@ -25,10 +26,10 @@ typedef struct {
 #define A(L) (L).A
 #define B(L) (L).B
 #define C(L) (L).C
-#define Elmt(C, i) (C).Tab[(i)]
-#define Tab(C) (C).Tab
-#define MaxEl(C) (C).MaxEl
-#define Neff(C) (C).Neff
+#define Elmt(S, i) (S).Tab[(i)]
+#define Tab(S) (S).Tab
+#define MaxEl(S) (S).MaxEl
+#define Neff(S) (S).Neff
 
 POINT MakePOINT (int X, int Y);
 /* Membentuk sebuah POINT dari komponen-komponennya */
@@ -54,5 +55,7 @@ void MakeEmpty(SET *S, int maxel);
 bool isLeft(LINE L, POINT P);
 
 bool isRight(LINE L, POINT P);
+
+bool isOneSide(int N, bool Side);
 
 #endif

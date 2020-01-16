@@ -47,7 +47,7 @@ bool isLeft(LINE L, POINT P){
     int D;
 
     D = (Absis(P) * A(L)) + (Ordinat(P) * B(L));
-    if (D < C(L)) {
+    if (D <= C(L)) {
         return true;
     }
     
@@ -58,46 +58,72 @@ bool isRight(LINE L, POINT P){
     int D;
 
     D = (Absis(P) * A(L)) + (Ordinat(P) * B(L));
-    if (D > C(L)) {
+    if (D >= C(L)) {
         return true;
     }
     
     return false;
 }
 
+bool isOneSide(int N, bool Side){
+    int i;
+    bool OneSide = Side[1];
+
+    for(i=2; i<=N; i++){
+        if (Side[i] != OneSide){
+            return false;
+        }
+    }
+
+    return true;
+}
+
 int main() {
-    int N, i, j, k;
-    SET S;
+    int N, i, j, k, ctr;
+    SET S, Convex;
     LINE L;
     bool AllLeft, AllRight;
 
     srand(time(0));
     scanf("%d", &N);
-    int *arr = (int*)malloc((N+1)*sizeof(int));
-    for(i=1; i<=N; i++){
-        arr[i] = i;
-        printf("%d ", arr[i]);
-    }
+    
     MakeEmpty(&S, N);
+    MakeEmpty(&Convex, N);
+    ctr = 1;
+
+    bool *Left = (bool*)malloc((N+1)*sizeof(bool));
+    bool *Right = (bool*)malloc((N+1)*sizeof(bool));
+
     for(i=1; i<=N; i++){
         Elmt(S, i) = MakePOINT(rand(), rand());
         TulisPOINT(Elmt(S, i));
+        Neff(S) = N;
     }
 
-    for(i=1; i<=N; i++){
+    for(i=1; i<=N; i++){ /* Looping titik acuan */
         AllLeft = true;
         AllRight = true;
 
-        for(j=1; j<=N && j!=i; j++){
+        for(j=1; j<=N && j!=i; j++){ /* Looping titik kemungkinan convex */
             MakeGARIS(Elmt(S, i), Elmt(S, j), &L);
-            for(k=1; k<=N && k!=j && k!=i && AllLeft==true && AllRight==true; k++){
-                AllLeft = isLeft(L, Elmt(S,k));
-                AllRight = isRight(L, Elmt(S,k));
+            
+            for(k=1; k<=N; k++){ /* Checking titik */
+                Left[k] = isLeft(L, Elmt(S, k));
+                Right[k] = isRight(L, Elmt(S, k));
             }
-            if (AllLeft==true || AllRight==true){
-                Elmt(S,)
+        
+            if (isOneSide(N, Left) != isOneSide(N, Right)){
+                Elmt(Convex, ctr) = Elmt(S, i);
+                Neff(Convex) = ctr;
+                ctr++;
             }
         }
+    }
+    printf("%d\n", Neff(Convex));
+
+    for(i=1; i<=Neff(Convex); i++){
+        TulisPOINT(Elmt(Convex, i));
+        printf("\n");
     }
 
     return 0;
