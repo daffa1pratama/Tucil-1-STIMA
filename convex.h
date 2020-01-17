@@ -4,21 +4,20 @@
 #include <stdbool.h>
 
 typedef struct { 
-	float X; /* absis   */
-	float Y; /* ordinat */;
+	int X; /* absis   */
+	int Y; /* ordinat */;
 } POINT;
 
 typedef struct {
     // Ax + By = C
-    float A;    /* Koefisien A */
-    float B;    /* Koefisien B */
-    float C;    /* Koefisien C */
+    int A;    /* Koefisien A */
+    int B;    /* Koefisien B */
+    int C;    /* Koefisien C */
 } LINE;
 
 typedef struct {
     POINT *Tab;
     int MaxEl;
-    int Neff;
 } SET;
 
 #define Absis(P) (P).X
@@ -29,7 +28,6 @@ typedef struct {
 #define Elmt(S, i) (S).Tab[(i)]
 #define Tab(S) (S).Tab
 #define MaxEl(S) (S).MaxEl
-#define Neff(S) (S).Neff
 
 POINT MakePOINT (int X, int Y);
 /* Membentuk sebuah POINT dari komponen-komponennya */
@@ -52,10 +50,34 @@ void MakeEmpty(SET *S, int maxel);
 /* I.S. T sembarang, maxel > 0 */
 /* F.S. Terbentuk tabel T kosong dengan kapasitas maxel + 1 */
 
-bool isLeft(LINE L, POINT P);
+bool EQ (POINT P1, POINT P2);
+/* Mengirimkan true jika P1 = P2 : absis dan ordinatnya sama */
 
-bool isRight(LINE L, POINT P);
+int isLeft(LINE L, POINT P);
 
-bool isOneSide(int N, bool Side);
+int isRight(LINE L, POINT P);
+
+int isOneSide(int N, int *Side);
+
+void Dealokasi(SET *T);
+/* I.S. T terdefinisi; */
+/* F.S. TI(T) dikembalikan ke system, MaxEl(T)=0; Neff(T)=0 */
+
+bool SearchB(SET S, POINT P);
+/* Search apakah ada elemen tabel T yang bernilai X */
+/* Jika ada, menghasilkan true, jika tidak ada menghasilkan false */
+/* Skema searching yang digunakan bebas */
+
 
 #endif
+
+// 1 2
+// 1 3
+// 1 4
+// 1 5
+// 2 3
+// 2 4
+// 2 5
+// 3 4
+// 3 5
+// 4 5
