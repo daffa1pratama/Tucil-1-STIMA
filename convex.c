@@ -32,7 +32,7 @@ void MakeGARIS (POINT P1, POINT P2, LINE *L)
 /* Membentuk sebuah L dari komponen-komponennya */
 {
     A(*L) = Ordinat(P2) - Ordinat(P1);
-    B(*L) = Absis(P2) - Absis(P1);
+    B(*L) = Absis(P1) - Absis(P2);
     C(*L) = (Ordinat(P2) * Absis(P1)) - (Ordinat(P1) * Absis(P2));
 }
 
@@ -54,42 +54,36 @@ int isLeft(LINE L, POINT P){
     int D;
 
     D = (Absis(P) * A(L)) + (Ordinat(P) * B(L));
-    if (D <= C(L)) {
+    printf("C , D : %d %d\n", C(L), D);
+    if (D < C(L)) {
         return 1;
     }
     
     return 0;
 }
 
-int isRight(LINE L, POINT P){
-    int D;
+// int isRight(LINE L, POINT P){
+//     int D;
 
-    D = (Absis(P) * A(L)) + (Ordinat(P) * B(L));
-    if (D >= C(L)) {
-        return 1;
-    }
+//     D = (Absis(P) * A(L)) + (Ordinat(P) * B(L));
+//     if (D >= C(L)) {
+//         return 1;
+//     }
     
-    return 0;
-}
+//     return 0;
+// }
 
 int isOneSide(int N, int *Side){
     int i;
     int OneSide = Side[1];
 
-    for(i=2; i<=N; i++){
+    for(i=2; i<=N-2; i++){
         if (Side[i] != OneSide){
             return 0;
         }
     }
 
     return 1;
-}
-
-void Dealokasi(SET *T)
-/* I.S. T terdefinisi; */
-/* F.S. TI(T) dikembalikan ke system, MaxEl(T)=0; Neff(T)=0 */
-{
-    free(Tab(*T));
 }
 
 bool SearchB(SET S, POINT P)
@@ -123,22 +117,23 @@ int main() {
     srand(time(0));
     // scanf("%d", &N);
     
-    N = 4;
+    N = 5;
     MakeEmpty(&S, N);
     MakeEmpty(&Convex, pow(N,N));
 
     int *Left = (int*)malloc((N+1)*sizeof(int));
 
-    for(i=1; i<=N; i++){
-        Elmt(S, i) = MakePOINT(rand(), rand());
-        TulisPOINT(Elmt(S, i));
-    }
-    printf("\n");
+    // for(i=1; i<=N; i++){
+    //     Elmt(S, i) = MakePOINT(rand(), rand());
+    //     TulisPOINT(Elmt(S, i));
+    // }
+    // printf("\n");
 
     Elmt(S, 1) = MakePOINT(2, 0);
-    Elmt(S, 2) = MakePOINT(6, 0);
+    Elmt(S, 2) = MakePOINT(10, 0);
     Elmt(S, 3) = MakePOINT(4, 4);
     Elmt(S, 4) = MakePOINT(4, 1);
+    Elmt(S, 5) = MakePOINT(5, 0);
     // Elmt(S, 1) = MakePOINT(25, 42);
     // Elmt(S, 2) = MakePOINT(45, 98);
     // Elmt(S, 3) = MakePOINT(65, 12);
@@ -147,7 +142,6 @@ int main() {
     /* Looping titik acuan */
     ctr = 1;
     for(i=1; i<=N; i++){
-        printf("ini i : %d\n", i);
 
         /* Looping titik kemungkinan convex */
         for(j=1; j<=N; j++){ 
@@ -155,10 +149,14 @@ int main() {
                 MakeGARIS(Elmt(S, i), Elmt(S, j), &L);
                 printf("Check : %d , %d\n", i, j);
                 /* Checking titik */
+                count = 1;
                 for(k=1; k<=N; k++){ 
-                    printf("compare with : %d, ", k);
-                    Left[k] = isLeft(L, Elmt(S, k));
-                    printf("%d\n", Left[k]);
+                    if ((k!=i) && (k!=j)){
+                        printf("compare with : %d, ", k);
+                        Left[count] = isLeft(L, Elmt(S, k));
+                        printf("%d\n", Left[count]);
+                        count++;
+                    }
                 }
             
                 printf("%d\n", isOneSide(N,Left));
@@ -186,7 +184,7 @@ int main() {
         TulisPOINT(Elmt(Convex, i));
         printf("\n");
     }
-
+    
     return 0;
 }
 

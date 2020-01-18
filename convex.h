@@ -55,13 +55,9 @@ bool EQ (POINT P1, POINT P2);
 
 int isLeft(LINE L, POINT P);
 
-int isRight(LINE L, POINT P);
+// int isRight(LINE L, POINT P);
 
 int isOneSide(int N, int *Side);
-
-void Dealokasi(SET *T);
-/* I.S. T terdefinisi; */
-/* F.S. TI(T) dikembalikan ke system, MaxEl(T)=0; Neff(T)=0 */
 
 bool SearchB(SET S, POINT P);
 /* Search apakah ada elemen tabel T yang bernilai X */
