@@ -5,77 +5,97 @@
 #include "convex.h"
 
 POINT MakePOINT(int X, int Y)
-/* Membentuk sebuah POINT dari komponen-komponennya */
+/* Membentuk POINT dari komponen X dan Y */
 {
+    /* KAMUS */
     POINT P;
 
+    /* ALGORITMA */
     Absis(P) = X;
     Ordinat(P) = Y;
+
     return P;
 }
 
 void TulisPOINT(POINT P)
-/* Nilai P ditulis ke layar dengan format "(X,Y)" 
-   tanpa spasi, enter, atau karakter lain di depan, belakang, 
-   atau di antaranya 
-   Output X dan Y harus dituliskan dalam bilangan riil dengan 2 angka di belakang koma.
-*/
-/* I.S. P terdefinisi */
-/* F.S. P tertulis di layar dengan format "(X,Y)" */                
+/* Menuliskan POINT dalam format (X,Y) */              
 {
+    /* KAMUS */
+
+    /* ALGORITMA */
     printf("(%d,%d)", Absis(P), Ordinat(P));
 }
 
-void MakeGARIS (POINT P1, POINT P2, LINE *L)
-/* I.S. P1 dan P2 terdefinisi */
-/* F.S. L terdefinisi dengan L.PAw = P1 dan L.PAkh = P2 */
-/* Membentuk sebuah L dari komponen-komponennya */
+int Jarak (POINT P1, POINT P2)
+/* Menghitung jarak antara 2 titik */
 {
-    A(*L) = Ordinat(P2) - Ordinat(P1);
-    B(*L) = Absis(P1) - Absis(P2);
-    C(*L) = (Ordinat(P2) * Absis(P1)) - (Ordinat(P1) * Absis(P2));
+    /* KAMUS */
+
+    /* ALGORITMA */
+    return sqrt(pow((Absis(P1) - Absis(P2)), 2) + pow((Ordinat(P1) - Ordinat(P2)), 2));
 }
 
-void MakeEmpty(SET *C, int maxel)
-/* I.S. T sembarang, maxel > 0 */
-/* F.S. Terbentuk tabel T kosong dengan kapasitas maxel + 1 */
+void MakeEmpty(SET *S, int maxel)
+/* Membuat array dinamis POINT dengan elemen sejumlah N+1 */
 {
-    Tab(*C) = (POINT*)malloc((maxel+1)*sizeof(POINT));
-    MaxEl(*C) = maxel;
+    /* KAMUS */
+
+    /* ALGORITMA */
+    Tab(*S) = (POINT*)malloc((maxel+1)*sizeof(POINT));
+    MaxEl(*S) = maxel;
 }
 
 bool EQ(POINT P1, POINT P2)
-/* Mengirimkan true jika P1 = P2 : absis dan ordinatnya sama */
+/* Mengecek apakah P1 dan P2 adalah titik yang sama */
 {
+    /* KAMUS */
+
+    /* ALGORITMA */
     return((Absis(P1)==Absis(P2)) && (Ordinat(P1)==Ordinat(P2)));
 }
 
-int isLeft(LINE L, POINT P){
-    int D;
+int isLeft(POINT P1, POINT P2, POINT Px)
+/* Mengecek apakah titik Px berada di sebelah "kiri" dari garis L */
+{
+    /* KAMUS */
+    int A, B, C1, C2, D1, D2;
 
-    D = (Absis(P) * A(L)) + (Ordinat(P) * B(L));
-    printf("C , D : %d %d\n", C(L), D);
-    if (D < C(L)) {
+    /* ALGORITMA */
+    A = Ordinat(P2) - Ordinat(P1);
+    B = Absis(P1) - Absis(P2);
+    C1 = (Ordinat(P2) * Absis(P1)) - (Ordinat(P1) * Absis(P2));
+    D1 = Jarak(P1, P2);
+    
+    C2 = (Absis(Px) * A) + (Ordinat(Px) * B);
+    
+    if (C2 < C1) {
         return 1;
     }
-    
-    return 0;
+    else if (C2 == C1) {
+        D2 = Jarak(Px, P1);
+        printf(" %d %d\n", D2, D1);
+        if (D2 > D1) {
+            return 0;
+        }
+        else {
+            return 1;
+        }
+    }
+    else {
+        return 0;
+    }
 }
 
-// int isRight(LINE L, POINT P){
-//     int D;
-
-//     D = (Absis(P) * A(L)) + (Ordinat(P) * B(L));
-//     if (D >= C(L)) {
-//         return 1;
-//     }
-    
-//     return 0;
-// }
-
-int isOneSide(int N, int *Side){
+int isOneSide(int N, int *Side)
+/* Mengecek apakah semua titik yang dicek */
+/* berada di salah satu sisi atau tidak */
+{
+    /* KAMUS */
     int i;
-    int OneSide = Side[1];
+    int OneSide; 
+    
+    /* ALGORITMA */
+    OneSide= Side[1];
 
     for(i=2; i<=N-2; i++){
         if (Side[i] != OneSide){
@@ -86,14 +106,13 @@ int isOneSide(int N, int *Side){
     return 1;
 }
 
-bool SearchB(SET S, POINT P)
-/* Search apakah ada elemen tabel T yang bernilai X */
-/* Jika ada, menghasilkan true, jika tidak ada menghasilkan false */
-/* Skema searching yang digunakan bebas */
+bool Search(SET S, POINT P)
+/* Mencari apakah P merupakan elemen dari list */
 {
     /* KAMUS */
     bool found;
     int i;
+
     /* ALGORITMA */
     i = 1;
     found = false;
@@ -109,36 +128,40 @@ bool SearchB(SET S, POINT P)
 }
 
 int main() {
+    /* KAMUS */
     int N, i, j, k, ctr;
     int count;
     SET S, Convex;
-    LINE L;
 
+    /* ALGORITMA */
     srand(time(0));
-    // scanf("%d", &N);
+    scanf("%d", &N);
     
-    N = 5;
+    // N = 8;
     MakeEmpty(&S, N);
-    MakeEmpty(&Convex, pow(N,N));
+    MakeEmpty(&Convex, N);
 
     int *Left = (int*)malloc((N+1)*sizeof(int));
 
-    // for(i=1; i<=N; i++){
-    //     Elmt(S, i) = MakePOINT(rand(), rand());
-    //     TulisPOINT(Elmt(S, i));
-    // }
-    // printf("\n");
+    for(i=1; i<=N; i++){
+        Elmt(S, i) = MakePOINT(rand() % 100, rand() % 100);
+        TulisPOINT(Elmt(S, i));
+    }
+    printf("\n");
 
-    Elmt(S, 1) = MakePOINT(2, 0);
-    Elmt(S, 2) = MakePOINT(10, 0);
-    Elmt(S, 3) = MakePOINT(4, 4);
-    Elmt(S, 4) = MakePOINT(4, 1);
-    Elmt(S, 5) = MakePOINT(5, 0);
+    // Elmt(S, 1) = MakePOINT(2, 0);
+    // Elmt(S, 2) = MakePOINT(10, 0);
+    // Elmt(S, 3) = MakePOINT(4, 4);
+    // Elmt(S, 4) = MakePOINT(4, 1);
+    // Elmt(S, 5) = MakePOINT(5, 0);
     // Elmt(S, 1) = MakePOINT(25, 42);
     // Elmt(S, 2) = MakePOINT(45, 98);
     // Elmt(S, 3) = MakePOINT(65, 12);
     // Elmt(S, 4) = MakePOINT(10, 30);
     
+    clock_t t;
+    t = clock();
+
     /* Looping titik acuan */
     ctr = 1;
     for(i=1; i<=N; i++){
@@ -146,14 +169,14 @@ int main() {
         /* Looping titik kemungkinan convex */
         for(j=1; j<=N; j++){ 
             if (i!=j){
-                MakeGARIS(Elmt(S, i), Elmt(S, j), &L);
+                // MakeGARIS(Elmt(S, i), Elmt(S, j), &L);
                 printf("Check : %d , %d\n", i, j);
                 /* Checking titik */
                 count = 1;
                 for(k=1; k<=N; k++){ 
                     if ((k!=i) && (k!=j)){
                         printf("compare with : %d, ", k);
-                        Left[count] = isLeft(L, Elmt(S, k));
+                        Left[count] = isLeft(Elmt(S, i), Elmt(S, j), Elmt(S, k));
                         printf("%d\n", Left[count]);
                         count++;
                     }
@@ -162,7 +185,7 @@ int main() {
                 printf("%d\n", isOneSide(N,Left));
                 /* Apakah satu sisi atau tidak */
                 if (isOneSide(N, Left) == 1){
-                    if (!SearchB(Convex, Elmt(S, i))){
+                    if (!Search(Convex, Elmt(S, i))){
                         Elmt(Convex, ctr) = Elmt(S, i);
                         ctr++;
                         printf("yes\n");
@@ -174,17 +197,22 @@ int main() {
     }
     printf("%d\n", ctr);
 
-    // printf("==================\n");
-    // TulisPOINT(Elmt(Convex, 5));
-    // printf("\n");
-    // TulisPOINT(Elmt(Convex, 6));
-    // printf("\n");
-    // printf("==================\n");
+    t = clock() - t;
+    double time = ((double)t)/CLOCKS_PER_SEC;
+
     for(i=1; i<=ctr-1; i++){
         TulisPOINT(Elmt(Convex, i));
         printf("\n");
     }
     
+    printf("======================\n");
+
+    for(i=1; i<=N; i++){
+        TulisPOINT(Elmt(S, i));
+    }
+
+    printf("time taken : %f\n", time);
+
     return 0;
 }
 

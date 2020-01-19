@@ -4,76 +4,46 @@
 #include <stdbool.h>
 
 typedef struct { 
-	int X; /* absis   */
-	int Y; /* ordinat */;
+	int X; /* Absis   */
+	int Y; /* Ordinat */;
 } POINT;
 
 typedef struct {
-    // Ax + By = C
-    int A;    /* Koefisien A */
-    int B;    /* Koefisien B */
-    int C;    /* Koefisien C */
-} LINE;
-
-typedef struct {
-    POINT *Tab;
-    int MaxEl;
+    POINT *Tab; /* Container menyimpan elemen */
+    int MaxEl;  /* Jumlah maksimum elemen */
 } SET;
 
 #define Absis(P) (P).X
 #define Ordinat(P) (P).Y
-#define A(L) (L).A
-#define B(L) (L).B
-#define C(L) (L).C
 #define Elmt(S, i) (S).Tab[(i)]
 #define Tab(S) (S).Tab
 #define MaxEl(S) (S).MaxEl
 
 POINT MakePOINT (int X, int Y);
-/* Membentuk sebuah POINT dari komponen-komponennya */
+/* Membentuk POINT dari komponen X dan Y */
 
 void TulisPOINT (POINT P);
-/* Nilai P ditulis ke layar dengan format "(X,Y)" 
-   tanpa spasi, enter, atau karakter lain di depan, belakang, 
-   atau di antaranya 
-   Output X dan Y harus dituliskan dalam bilangan riil dengan 2 angka di belakang koma.
-*/
-/* I.S. P terdefinisi */
-/* F.S. P tertulis di layar dengan format "(X,Y)" */                
+/* Menuliskan POINT dalam format (X,Y) */              
 
-void MakeGARIS (POINT P1, POINT P2, LINE * L);
-/* I.S. P1 dan P2 terdefinisi */
-/* F.S. L terdefinisi dengan L.PAw = P1 dan L.PAkh = P2 */
-/* Membentuk sebuah L dari komponen-komponennya */
+int Jarak (POINT P1, POINT P2);
+/* Menghitung jarak antara 2 titik */
 
 void MakeEmpty(SET *S, int maxel);
-/* I.S. T sembarang, maxel > 0 */
-/* F.S. Terbentuk tabel T kosong dengan kapasitas maxel + 1 */
+/* Membuat array dinamis POINT dengan elemen sejumlah N+1 */
 
 bool EQ (POINT P1, POINT P2);
-/* Mengirimkan true jika P1 = P2 : absis dan ordinatnya sama */
+/* Mengecek apakah P1 dan P2 adalah titik yang sama */
 
-int isLeft(LINE L, POINT P);
-
-// int isRight(LINE L, POINT P);
+int isLeft(POINT Pa, POINT Pb, POINT Px);
+/* Mengecek apakah titik Px berada di sebelah "kiri" dari garis L */
+// int isLeft(LINE L, POINT Pa, POINT Px);
+// /* Mengecek apakah titik Px berada di sebelah "kiri" dari garis L */
 
 int isOneSide(int N, int *Side);
+/* Mengecek apakah semua titik yang dicek */
+/* berada di salah satu sisi atau tidak */
 
-bool SearchB(SET S, POINT P);
-/* Search apakah ada elemen tabel T yang bernilai X */
-/* Jika ada, menghasilkan true, jika tidak ada menghasilkan false */
-/* Skema searching yang digunakan bebas */
-
+bool Search(SET S, POINT P);
+/* Mencari apakah P merupakan elemen dari list */
 
 #endif
-
-// 1 2
-// 1 3
-// 1 4
-// 1 5
-// 2 3
-// 2 4
-// 2 5
-// 3 4
-// 3 5
-// 4 5
