@@ -135,6 +135,7 @@ int main() {
 
     /* ALGORITMA */
     srand(time(0));
+    printf("Masukkan jumlah titik : ");
     scanf("%d", &N);
     
     // N = 8;
@@ -143,11 +144,13 @@ int main() {
 
     int *Left = (int*)malloc((N+1)*sizeof(int));
 
+    printf("Titik yang diperoleh : \n");
     for(i=1; i<=N; i++){
         Elmt(S, i) = MakePOINT(rand() % 100, rand() % 100);
         TulisPOINT(Elmt(S, i));
+        printf("\n");
     }
-    printf("\n");
+    printf("===============\n");
 
     // Elmt(S, 1) = MakePOINT(2, 0);
     // Elmt(S, 2) = MakePOINT(10, 0);
@@ -169,47 +172,44 @@ int main() {
         /* Looping titik kemungkinan convex */
         for(j=1; j<=N; j++){ 
             if (i!=j){
-                // MakeGARIS(Elmt(S, i), Elmt(S, j), &L);
-                printf("Check : %d , %d\n", i, j);
+                // printf("Check : %d , %d\n", i, j);
+
                 /* Checking titik */
                 count = 1;
                 for(k=1; k<=N; k++){ 
                     if ((k!=i) && (k!=j)){
-                        printf("compare with : %d, ", k);
+                        // printf("compare with : %d, ", k);
                         Left[count] = isLeft(Elmt(S, i), Elmt(S, j), Elmt(S, k));
-                        printf("%d\n", Left[count]);
+                        // printf("%d\n", Left[count]);
                         count++;
                     }
                 }
             
-                printf("%d\n", isOneSide(N,Left));
+                // printf("%d\n", isOneSide(N,Left));
                 /* Apakah satu sisi atau tidak */
                 if (isOneSide(N, Left) == 1){
                     if (!Search(Convex, Elmt(S, i))){
                         Elmt(Convex, ctr) = Elmt(S, i);
                         ctr++;
-                        printf("yes\n");
+                        // printf("yes\n");
                     }
                 }
             }
         }
-        printf("ganti\n");
+        // printf("ganti\n");
     }
-    printf("%d\n", ctr);
+    // printf("%d\n", ctr);
 
     t = clock() - t;
     double time = ((double)t)/CLOCKS_PER_SEC;
 
+    printf("Convex Hull : \n");
     for(i=1; i<=ctr-1; i++){
         TulisPOINT(Elmt(Convex, i));
         printf("\n");
     }
     
-    printf("======================\n");
-
-    for(i=1; i<=N; i++){
-        TulisPOINT(Elmt(S, i));
-    }
+    printf("===============\n");
 
     printf("time taken : %f\n", time);
 
